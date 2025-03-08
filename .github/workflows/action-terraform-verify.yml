@@ -50,7 +50,7 @@ jobs:
       - name: Process Check
         if: always()
         run: exit $CHECK_STATUS
-        
+
   terraform-validate:
     runs-on: ubuntu-latest
     name: Terraform Validate
@@ -68,4 +68,4 @@ jobs:
         run: terraform init
 
       - name: Validate Terraform configuration
-        uses: terraform validate
+        run: terraform validate
