@@ -12,41 +12,60 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    name: terraform fmt check
+    name: Terraform fmt Check
     outputs:
       CHECK_STATUS: "${{ env.CHECK_STATUS }}"
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 2
+
       - name: Fetch changed files
         id: pr_files
         uses: jitterbit/get-changed-files@v1
         with:
           format: "space-delimited"
-      - name: Configure terraform
+
+      - name: Configure Terraform
         uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.2.4
+
       - name: Validate terraform fmt (added_modified)
         run: |
           set +e
-
           echo "CHECK_STATUS=0" >> $GITHUB_ENV
 
           for changed_file in ${{ steps.pr_files.outputs.added_modified }}; do
             echo "Checking terraform fmt on ${changed_file}..."
-
             if [[ $changed_file == *.tf ]]; then
               terraform fmt -check $changed_file
-              FMT_STATUS=$(echo $?)
-
-              if [[ $FMT_STATUS -ne 0 ]]; then
+              if [[ $? -ne 0 ]]; then
                 echo "❌ terraform fmt failed - ${changed_file}" >> $GITHUB_STEP_SUMMARY
                 echo "CHECK_STATUS=1" >> $GITHUB_ENV
               fi
             fi
           done
-      - name: Process check
+
+      - name: Process Check
         if: always()
         run: exit $CHECK_STATUS
+        
+  terraform-validate:
+    runs-on: ubuntu-latest
+    name: Terraform Validate
+    needs: validate
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.2.4
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Validate Terraform configuration
+        uses: terraform validate
