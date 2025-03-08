@@ -3,4 +3,4 @@
 
 echo "terraform fmt -check -recursive" > .husky/pre-commit
 echo "terraform validate" >> .husky/pre-commit
-echo "terraform validate" >> .husky/pre-commit
+echo "tflint" >> .husky/pre-commit

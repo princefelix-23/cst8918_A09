@@ -14,10 +14,10 @@ provider "azurerm" {
 }
 
 # Resource Group
-resource "azurerm_resource_group" "rg" 
-  name = "cst8918-lab09"
+resource "azurerm_resource_group" "rg" {
+  name     = "cst8918-lab09"
   location = "Canada Central"
-
+}
 
 # Storage Account
 resource "azurerm_storage_account" "storage" {
