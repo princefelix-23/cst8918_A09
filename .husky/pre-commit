@@ -1,6 +1,3 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
-
-echo "terraform fmt -check -recursive" > .husky/pre-commit
-echo "terraform validate" >> .husky/pre-commit
-echo "tflint" >> .husky/pre-commit
+terraform fmt -check -recursive
+terraform validate
+tflint
